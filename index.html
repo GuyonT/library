@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="header-container">myLibrary</div>
+    </header>
+    <main>
+        <button id="dialog-button">Add a book</button>
+        <section class="book-grid" id="book-grid">
+            <article class="book-card" id="book-card">
+                <p class="display-name">Name of the book</p>
+                <p class="display-author">Author</p>
+                <p class="display-pages">Number of pages</p> 
+                <div class="button-group">
+                    <button class="button red-button">Not read</button>
+                    <button class="button">Remove</button>
+                </div>
+            </article>
+        </section>
+        <dialog id="dialog">
+            <button id="close-button">X</button>
+            <form action="none" method="dialog" id="form">
+                <label for="book-name">Name of the book:</label><input type="text" id="book-name" required autofocus>
+                <label for="book-author"></label>Author of the book:<input type="text" id="book-author" required>
+                <label for="book-pages"></label>Number of pages:<input type="number" id="book-pages" required>
+                <label for="read-status">Did you read this book?<input type="checkbox" name="read" id="read-status"></label>
+                <input type="submit" id="submit" value="Add to the Library">
+                <button type="reset" id="reset-button">Reset</button>
+            </form>
+        </dialog>
+    </main>
+    <button id="js-btn">GO</button>
+</body>
+</html>

@@ -1,0 +1,39 @@
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+
+.book-grid {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+    width: 100%;
+}
+
+.book-card {
+    border: 1px solid black;
+    width: 10rem;
+    padding: 5px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.display-name {
+    text-decoration: underline;
+}
+
+.button {
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.red-button {
+    background-color: red;
+}
+
+.green-button {
+    background-color: green;
+}
