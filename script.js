@@ -1,106 +1,117 @@
 class Book {
-    constructor(name, author, pages) {
-        this.name = name;
+    constructor(title, author, pages, isRead = false) {
+        this.title = title;
         this.author = author;
         this.pages = pages;
+        this.isRead = isRead;
+        this.id = Date.now().toString();
     }
 
-    isRead = false;
-    index = n;
-
-    info() {
-        return this.name + " by " + this.author + ", " + this.pages + "pages."
+    toggleRead() {
+        this.isRead = !this.isRead;
     }
 }
 
-//variables 
-
-const bookName = document.getElementById("book-name");
-const bookAuthor = document.getElementById("book-author");
-const bookPages = document.getElementById("book-pages");
-const readStatus = document.getElementById("read-status");
-
-const form = document.getElementById("form")
-const showDialog = document.getElementById("dialog-button");
-const dialog = document.getElementById("dialog");
-const submitBtn = document.getElementById("submit");
-const closeBtn = document.getElementById("close-button");
-
-const grid = document.getElementById("book-grid");
-
-const myLibrary = [];
-let n = 0;
-
-
-//dialog events
-
-showDialog.addEventListener("click", () => {
-    dialog.showModal();
-})
-
-closeBtn.addEventListener("click", () => {
-    dialog.close();
-})
-
-submitBtn.addEventListener("click", () => {
-    if (form.checkValidity()) {
-        let userBook = new Book(bookName.value, bookAuthor.value, bookPages.value);
-        n++;
-        if (readStatus.checked) {userBook.isRead = true} else {userBook.isRead = false}
-        myLibrary.push(userBook);
-
-        displayBookGrid();
-        setTimeout(function () {
-            form.reset();
-        }, 10)
+class Library {
+    constructor() {
+        this.books = [];
     }
-})
 
+    addBook(book) {
+        this.books.push(book);
+        this.display();
+    }
 
-//display functions
+    removeBook(bookId) {
+        this.books = this.books.filter(book => book.id !== bookId);
+        this.display();
+    }
 
-const jsBtn = document.getElementById("js-btn")
-jsBtn.addEventListener("click", () => {
-    console.log(myLibrary);
-})
-
-
-function displayBookGrid () {
-    grid.innerHTML = "";
-
-    myLibrary.forEach((book) => {
-        let card = document.createElement("article");
-        card.classList.add("book-card");
-        grid.appendChild(card)
-
-        let displayName = document.createElement("p");
-        displayName.classList.add("display-name")
-        displayName.textContent = book.name;
-        card.appendChild(displayName);
-
-        let displayAuthor = document.createElement("p");
-        displayAuthor.textContent = book.author;
-        card.appendChild(displayAuthor);
-
-        let displayPages = document.createElement("p");
-        displayPages.textContent = book.pages + " pages";
-        card.appendChild(displayPages);
-
-        let readButton = document.createElement("button");
-        if (!book.isRead) {
-            readButton.classList.add("button", "red-button");
-            readButton.textContent = "Not read";
-        } else {
-            readButton.classList.add("button", "green-button");
-            readButton.textContent = "Read";
+    toggleReadStatus(bookId) {
+        const book = this.books.find(book => book.id === bookId);
+        if (book) {
+            book.toggleRead();
+            this.display();
         }
-        card.appendChild(readButton);
+    }
 
-        let rmvButton = document.createElement("button");
-        rmvButton.textContent = "Remove";
-        rmvButton.classList.add("button");
-        card.appendChild(rmvButton)
-    })
+    display() {
+        const libraryDisplay = document.getElementById('libraryDisplay');
+        libraryDisplay.innerHTML = '';
+
+        this.books.forEach(book => {
+            const bookCard = document.createElement('div');
+            bookCard.className = 'book-card';
+            bookCard.innerHTML = `
+                <div class="book-info">
+                    <h3>${book.title}</h3>
+                    <p>By: ${book.author}</p>
+                    <p>Pages: ${book.pages}</p>
+                </div>
+                <div class="actions">
+                    <span 
+                        class="read-status ${book.isRead ? 'read' : 'unread'}"
+                        onclick="library.toggleReadStatus('${book.id}')">
+                        ${book.isRead ? 'Read' : 'Not Read'}
+                    </span>
+                    <button class="delete-btn" onclick="library.removeBook('${book.id}')">
+                        Delete Book
+                    </button>
+                </div>
+            `;
+            libraryDisplay.appendChild(bookCard);
+        });
+    }
 }
 
+const library = new Library();
 
+// Character counter setup
+function setupCharCounter(inputId, counterId, maxLength) {
+    const input = document.getElementById(inputId);
+    const counter = document.getElementById(counterId);
+    
+    input.addEventListener('input', () => {
+        counter.textContent = input.value.length;
+    });
+}
+
+setupCharCounter('title', 'titleCounter', 50);
+setupCharCounter('author', 'authorCounter', 30);
+
+// Modal handling
+const modal = document.getElementById('bookModal');
+const addBookBtn = document.getElementById('addBookBtn');
+const closeBtn = document.getElementsByClassName('close')[0];
+
+addBookBtn.onclick = function() {
+    modal.style.display = 'block';
+}
+
+closeBtn.onclick = function() {
+    modal.style.display = 'none';
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Form submission
+document.getElementById('bookForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = document.getElementById('title').value;
+    const author = document.getElementById('author').value;
+    const pages = parseInt(document.getElementById('pages').value);
+    const isRead = document.getElementById('readStatus').checked;
+    
+    const newBook = new Book(title, author, pages, isRead);
+    library.addBook(newBook);
+    
+    // Reset form and counters
+    e.target.reset();
+    document.getElementById('titleCounter').textContent = '0';
+    document.getElementById('authorCounter').textContent = '0';
+    modal.style.display = 'none';
+});
